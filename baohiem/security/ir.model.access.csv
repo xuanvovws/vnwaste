@@ -12,7 +12,7 @@ officer_dieu_chinh,Truy cập điều chỉnh,model_dieu_chinh,group_baohiem_off
 officer_lich_su,Truy cập Lịch sử thay đổi,model_lich_su,group_baohiem_officer,1,1,1,0
 officer_dchang_loat,Truy cập điều chỉnh HL,model_dchang_loat,group_baohiem_officer,1,1,1,1
 officer_cau_hinh,Truy cập Cấu hình,model_cau_hinh,group_baohiem_officer,0,0,0,0
-officer_ketnoi_lichsu,Truy cập kết nối Lịch sử,model_ketnoi_lichsu,group_baohiem_officer,0,0,0,0
+officer_ketnoi_lichsu,Truy cập kết nối Lịch sử,model_ketnoi_lichsu,group_baohiem_officer,1,1,1,1
 officer_cauhinh_vung,Truy cập Cấu hình Vùng,model_cauhinh_vung,group_baohiem_officer,1,1,1,1
 
 user_bao_hiem,Truy cập bảo hiểm,model_bao_hiem,group_baohiem_user,1,0,0,0
