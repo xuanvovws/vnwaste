@@ -1,0 +1,881 @@
+<odoo>
+  <data>
+      Adds all assets in Odoo
+      <menuitem
+        id="menu_bao_hiem"
+        name="Quản lý Bảo Hiểm"
+        web_icon="baohiem,static/description/icon.png"
+        sequence="91"/>
+      
+      <template id="assets_backend" name="backend" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/baohiem/static/src/css/statusbar.css"/>
+            <script type="text/javascript" src="/baohiem/static/src/js/autofillseparate.js"></script>
+            <script type="text/javascript" src="/baohiem/static/src/js/jquery.mask.min.js"></script>
+        </xpath>
+    </template>
+<record id="bao_hiem_form_view" model="ir.ui.view">
+            <field name="name">bao.hiem.form.view</field>
+            <field name="model">bao.hiem</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <!-- thêm class= ... thay đổi màu sắc của nút bấm -->
+                        <button type="object" string="TĂNG LAO ĐỘNG" name= "open_form_dieuchinh" 
+                                states="batdau" class="btn-success"/>
+                        <button type="object" string="THIẾT LẬP VỀ DỰ THẢO" name="ve_tang_lao_dong_bh" 
+                                states="giamtamthoi" class="active"/>
+                        <button type="object" string="TĂNG LAO ĐỘNG" name= "open_form_dieuchinh" 
+                                states="giamtamthoi" class="btn-success"/>
+                        <button type="object" string="THIẾT LẬP VỀ DỰ THẢO" name="ve_tang_lao_dong_bh" 
+                                states="dangchay" class="active"/>
+                        <button type="object" string="ĐIỀU CHỈNH" name="ve_xac_nhan_dc" 
+                                states="dangchay" class="active"/>
+                        
+                        <button type="object" string="GIẢM TẠM THỜI" name= "open_popup_form_dc_gtt" 
+                                states="dangchay" class="btn-danger"/>
+                        
+                        <button type="object" string="KẾT THÚC" name= "open_popup_form_dc_kt"
+                                states="dangchay" class="active"/>
+                        
+                        <button type="object" string="KẾT THÚC" name= "open_popup_form_dc_kt" 
+                                states="giamtamthoi" class="active"/>
+                        
+                        <button type="object" string="THIẾT LẬP VỀ DỰ THẢO" name="ve_tang_lao_dong_bh" 
+                                states="ketthuc" class="active"/>
+                        <button type="object" string="TĂNG LAO ĐỘNG" name= "open_form_dieuchinh" 
+                                states="ketthuc" class="btn-success"/>
+                        
+                        <field name="state" widget="statusbar"></field>
+                    </header>
+                    <sheet>
+<!--                        <widget name="web_ribbon" title="Tăng L.Đ" bg_color="btn-primary" 
+                                attrs="{'invisible': [('state', 'in', ('moi','giamtamthoi','ketthuc'))]}"/> -->
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="thamchieu_bh"/>
+                            </group>
+                            <group>
+                                <field name="thoigian_bh"/>
+                                <field name="bhxh_bh" widget="autofill_separate"/>
+                                <field name="bhtn_bh" widget="autofill_separate"/>
+                        <!-- Thêm fiel currency_id với invisible="1" để show biểu tượng tiền tệ ra sau field -->
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                            
+                            <!-- Label = rỗng để thêm khoảng cách giữa hàng trên và dưới -->
+                            <label for="bhxh" string=" " style="font-size: 40px"/>
+                            
+                            <group>
+                                <label for="bhxh" string="B.H Xã Hội" style="font-size: 20px"/>
+                                <field name="bhxh_nld_bh"/>
+                                <field name="bhxh_cty_bh"/>
+                            </group>
+                            <group>
+                                <label for="bhtn" string="B.H Thất Nghiệp" style="font-size: 18px"/>
+                                <field name="bhtn_nld_bh"/>
+                                <field name="bhtn_cty_bh"/>
+                            </group>
+                            <group>
+                                <label for="bhyt" string="B.H Y Tế" style="font-size: 20px"/>
+                                <field name="bhyt_nld_bh"/>
+                                <field name="bhyt_cty_bh"/>
+                                <field name="ngayhethan_bh"/>
+                                <field name="dkkhambenh_bh"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="bao_hiem_lich_su" string="Lịch Sử Thay Đổi">
+                                <!-- readonly="1" ==> Toàn bộ field trong many2one form view (model: lich_su.py)
+                                là readonly (ẩn nút edit/save) - là không thể chỉnh sửa-->
+                                <field name="lstd_baohiem" readonly="1">
+                                    <!-- create="false" ==> Tắt (Ẩn) chức năng "Add a line" trong one2many tree view -->
+                                    <!-- delete="false" ==> Ẩn nút 'Remove' trong one2many tree view-->
+                                    <tree create = "false" delete="false"
+                                          decoration-success="loai == 'tanglaodong'" decoration-danger="loai == 'giamtamthoi'"
+                                          decoration-bf="loai == 'ket_thuc'">
+                                        
+                                        <field name="thoigian_ls" width="10"/>
+                                        <field name="bhxh_ls" string="M.Đ BHXH" width="10" widget="monetary"/>
+                                        <field name="bhtn_ls" string="M.Đ BHTN" width="10" widget="monetary"/>
+                                        <field name="bhxh_nld" width="10"/>
+                                        <field name="bhxh_cty" width="10"/>
+                                        <field name="bhyt_nld" width="10"/>
+                                        <field name="bhyt_cty" width="10"/>
+                                        <field name="bhtn_nld" width="10"/>
+                                        <field name="bhtn_cty" width="10"/>
+                                        <field name="loai" width="10"/>
+                                        <field name="thamchieu_ls" width="10"/>
+                                    <!-- Thêm fiel currency_id với invisible="1" để show biểu tượng tiền tệ ra sau field -->
+                                        <field name="currency_id" invisible="1"/>
+                                    </tree>
+                                </field>
+							</page>						
+						</notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+********************************************************************************************************************************
+*************************  27/2/21: Tạo Group By theo State và set default trong tree view Bảo Hiểm:  **************************
+      
+      <record id="bao_hiem_tree_view_search" model="ir.ui.view">
+            <field name="name">bao.hiem.tree.view.search</field>
+            <field name="model">bao.hiem</field>
+            <field name="arch" type="xml">
+                <search string="Search theo State">
+                <!-- lọc theo group_by mặc định -->
+                    <group expand="0" string="Group By">
+                        <filter string="Group State" name="group_theo_state" context="{'group_by': 'state'}"/>                     
+                    </group>
+                <!--  Định nghĩa Search View dựa trên Tên người lao động hoặc Số sổ Bảo Hiểm -->
+                    <field name="name" filter_domain="['|',('name', 'ilike', self),('thamchieu_bh', 'ilike', self)]"/>
+                </search>
+         </field>
+      </record>
+      
+********************************************************************************************************************************     
+      
+        <record id="bao_hiem_tree_view" model="ir.ui.view">
+            <field name="name">bao.hiem.tree.view</field>
+            <field name="model">bao.hiem</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx='false' string="Bảo Hiểm Tree View">
+                    <field name="state" invisible="1"/>
+                    <field name="name"/>
+                    <field name="thamchieu_bh"/>
+                    <field name="bhxh_bh" widget="monetary"/>
+                    <field name="bhtn_bh" widget="monetary"/>
+                    <field name="trangthai_bh"/>
+            <!-- Thêm fiel currency_id với invisible="1" để show biểu tượng tiền tệ ra sau field -->
+                    <field name="currency_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_bao_hiem" model="ir.actions.act_window">
+            <field name="name">Sổ Bảo Hiểm</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bao.hiem</field>
+            <!-- set default cho Group By -->
+            <field name="context">{"search_default_group_theo_state": 1}</field>
+            
+            <!-- <field name="view_type">form</field> --> <!-- Odoo 13 has removed this field -->
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('bao_hiem_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('bao_hiem_form_view')})]"/>
+        </record>
+
+     <record id="dieu_chinh_form_view" model="ir.ui.view">
+            <field name="name">dieu.chinh.form.view</field>
+            <field name="model">dieu.chinh</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <!-- Tạo button xuất hiện theo từng status của bar với states=" "
+                        Định nghĩa name="xacnhan" bên model: dieu_chinh.py , ... -->
+                        <button type="object" string="XÁC NHẬN" name="xacnhan" states="moi" class="btn-info"/>
+                        <button type="object" string="HỦY" name="bihuy" states="daduocxacnhan" class="active"/>
+                        <button type="object" string="CHẤP THUẬN" name="chapthuan" states="daduocxacnhan" class="btn-info"/>
+                        <button type="object" string="THIẾT LẬP VỀ DỰ THẢO" name="veduthao" states="bihuy" class="active"/>
+                        <field name="state" widget="statusbar"></field>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                        <!--   Thêm required='True': yêu cầu bắt buộc điền thông tin vào field thamchieu theo form view cụ thể -->
+                                <field name="thamchieu" required='True'/>
+                                <field name="thoigian"/>
+                            </group>
+                            <group>
+                                <field name="bhxh" widget="autofill_separate"/>
+                                <field name="bhtn" widget="autofill_separate"/>
+                        <!-- Thêm fiel currency_id với invisible="1" để show biểu tượng tiền tệ ra sau field -->
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                            <group>
+                                <label for="bhxh" string="B.H Xã Hội" style="font-size: 20px"/>
+                                <field name="bhxh_mucdongnld"/>
+                                <field name="bhxh_mucdongcty"/>
+                            </group>
+                            <group>
+                                <label for="bhtn" string="B.H Thất Nghiệp" style="font-size: 18px"/>
+                                <field name="bhtn_mucdongnld"/>
+                                <field name="bhtn_mucdongcty"/>
+                            </group>
+                            <group>
+                                <label for="bhyt" string="B.H Y Tế" style="font-size: 20px"/>
+                                <field name="bhyt_mucdongnld"/>
+                                <field name="bhyt_mucdongcty"/>
+<!--                                <field name="ngayhethan"/>
+                                <field name="dkkhambenh"/>         -->
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="dieu_chinh_lich_su" string="Lịch Sử Điều Chỉnh">
+                                <!-- readonly="1" ==> Toàn bộ field trong many2one form view (model: ketnoi_lichsu.py)
+                                là readonly (ẩn nút edit/save) - là không thể chỉnh sửa-->
+                                <field name="knls_dieuchinh" readonly="1">
+                                    <!-- create="false" ==> Tắt (Ẩn) chức năng "Add a line" trong one2many tree view -->
+                                    <!-- delete="false" ==> Ẩn nút 'Remove' trong one2many tree view-->
+                                    <tree create="false" delete="false"
+                                          decoration-success="loai == 'tanglaodong'" decoration-danger="loai == 'giamtamthoi'"
+                                          decoration-bf="loai == 'ket_thuc'">
+                                        
+                                        <field name="knls_thoigian" width="10"/>
+                                        <field name="knls_bhxh" string="M.Đ BHXH" width="10" widget="monetary"/>
+                                        <field name="knls_bhtn" string="M.Đ BHTN" width="10" widget="monetary"/>
+                                        <field name="bhxh_md_nld" width="10"/>
+                                        <field name="bhxh_md_cty" width="10"/>
+                                        <field name="bhyt_md_nld" width="10"/>
+                                        <field name="bhyt_md_cty" width="10"/>
+                                        <field name="bhtn_md_nld" width="10"/>
+                                        <field name="bhtn_md_cty" width="10"/>
+                                        <field name="loai" width="10"/>
+                                        <field name="knls_thamchieu" width="10"/>
+                                <!-- Thêm fiel currency_id với invisible="1" để show biểu tượng tiền tệ ra sau field -->
+                                        <field name="currency_id" invisible="1"/>
+                                    </tree>
+                                </field>
+							</page>							
+						</notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+      
+      *********************************************************************************************************************************            
+<record id="ket_noi_lich_su_form_view" model="ir.ui.view">
+            <field name="name">ket.noi.lich.su.form.view</field>
+            <field name="model">ketnoi.lichsu</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+<!--                        <widget name="web_ribbon" title="Tăng L.Đ" bg_color="btn-primary" 
+                                attrs="{'invisible': [('state', 'in', ('moi','giamtamthoi','ketthuc'))]}"/> -->
+                        <group>
+                            <group>
+                                <label for='thongtin' string="Thông Tin" style="font-size: 26px"/>
+                                <field name="loai"/>
+                                <field name="knls_thamchieu"/>
+                                <field name="knls_thoigian"/>
+                                <field name="knls_bhxh" widget="autofill_separate"/>
+                                <field name="knls_bhtn" widget="autofill_separate"/>
+                        <!-- Thêm fiel currency_id với invisible="1" để show biểu tượng tiền tệ ra sau field -->
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                            <group>
+                                <label for="bhxh" string="B.H Xã Hội" style="font-size: 16px"/>
+                                <field name="bhxh_md_nld"/>
+                                <field name="bhxh_md_cty"/>
+                            </group>
+                            <group>
+                                <label for="bhtn" string="B.H Thất Nghiệp" style="font-size: 16px"/>
+                                <field name="bhtn_md_nld"/>
+                                <field name="bhtn_md_cty"/>
+                            </group>
+                            <group>
+                                <label for="bhyt" string="B.H Y Tế" style="font-size: 16px"/>
+                                <field name="bhyt_md_nld"/>
+                                <field name="bhyt_md_cty"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+*********************************************************************************************************************************
+      
+      <record id="tld_dc_form_view" model="ir.ui.view">
+            <field name="name">dieu.chinh.form.view</field>
+            <field name="model">dieu.chinh</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <!-- Tạo button xuất hiện theo từng status của bar với states=" "
+                        Định nghĩa name="xacnhan" bên model: dieu_chinh.py , ... -->
+                        <button type="object" string="XÁC NHẬN" name="xacnhan" states="moi" class="btn-info"/>
+                        <button type="object" string="HỦY" name="bihuy" states="daduocxacnhan" class="active"/>
+                        <button type="object" string="CHẤP THUẬN" name="chapthuan_tld" states="daduocxacnhan" class="btn-info"/>
+                        <button type="object" string="THIẾT LẬP VỀ DỰ THẢO" name="veduthao" states="bihuy" class="active"/>
+                        <field name="state" widget="statusbar"></field>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                        <!--   Thêm required='True': yêu cầu bắt buộc điền thông tin vào field thamchieu theo form view cụ thể -->
+                                <field name="thamchieu" required='True'/>
+                                <field name="thoigian"/>
+                            </group>
+                            <group>
+                                <field name="bhxh" widget="autofill_separate"/>
+                                <field name="bhtn" widget="autofill_separate"/>
+                        <!-- Thêm fiel currency_id với invisible="1" để show biểu tượng tiền tệ ra sau field -->
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                            <group>
+                                <label for="bhxh" string="B.H Xã Hội" style="font-size: 20px"/>
+                                <field name="bhxh_mucdongnld"/>
+                                <field name="bhxh_mucdongcty"/>
+                            </group>
+                            <group>
+                                <label for="bhtn" string="B.H Thất Nghiệp" style="font-size: 18px"/>
+                                <field name="bhtn_mucdongnld"/>
+                                <field name="bhtn_mucdongcty"/>
+                            </group>
+                            <group>
+                                <label for="bhyt" string="B.H Y Tế" style="font-size: 20px"/>
+                                <field name="bhyt_mucdongnld"/>
+                                <field name="bhyt_mucdongcty"/>
+<!--                                <field name="ngayhethan"/>
+                                <field name="dkkhambenh"/>         -->
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="dieu_chinh_lich_su" string="Lịch Sử Thay Đổi">
+                                <field name="knls_dieuchinh">
+                                    <!-- create="false" ==> Tắt (Ẩn) chức năng "Add a line" trong one2many tree view của id=tld -->
+                                    <!-- delete="false" ==> Ẩn nút 'Remove' trong one2many tree view-->
+                                    <tree create="false" delete="false"
+                                          decoration-success="loai == 'tanglaodong'" decoration-danger="loai == 'giamtamthoi'"
+                                          decoration-bf="loai == 'ket_thuc'">
+                                        
+                                        <field name="knls_thoigian" width="10"/>
+                                        <field name="knls_bhxh" string="M.Đ BHXH" width="10" widget="monetary"/>
+                                        <field name="knls_bhtn" string="M.Đ BHTN" width="10" widget="monetary"/>
+                                        <field name="bhxh_md_nld" width="10"/>
+                                        <field name="bhxh_md_cty" width="10"/>
+                                        <field name="bhyt_md_nld" width="10"/>
+                                        <field name="bhyt_md_cty" width="10"/>
+                                        <field name="bhtn_md_nld" width="10"/>
+                                        <field name="bhtn_md_cty" width="10"/>
+                                        <field name="loai" width="10"/>
+                                        <field name="knls_thamchieu" width="10"/>
+                                <!-- Thêm fiel currency_id với invisible="1" để show biểu tượng tiền tệ ra sau field -->
+                                        <field name="currency_id" invisible="1"/>
+                                    </tree>
+                                </field>
+							</page>							
+						</notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+      
+      <record id="dieu_chinh_tree_view" model="ir.ui.view">
+            <field name="name">dieu.chinh.tree.view</field>
+            <field name="model">dieu.chinh</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx='false' string="Điều Chỉnh Tree View">
+                    <field name="thamchieu"/>
+                    <!-- Thêm field name="state" invisible="1" để tránh lỗi khi mở Tree View trong Odoo. 
+                        Do model dieu_chinh.py : có field name = fields.Many2one(hr.employee... có thêm vào điều kiện: states -->
+                    <field name="state" invisible="1"/> 
+                </tree>
+            </field>
+        </record>
+      
+    <record id="action_dieu_chinh" model="ir.actions.act_window">
+            <field name="name">Điều Chỉnh</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dieu.chinh</field>
+            <!-- <field name="view_type">form</field> --> <!-- Odoo 13 has removed this field -->
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('dieu_chinh_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('dieu_chinh_form_view')})]"/>
+        </record>
+           
+ ********************************************************************************************************************************
+ ******************************  18/2/21: Tạo model dchang_loat.py và thêm các view tương ứng:  *********************************
+      
+     <record id="dieu_chinh_hang_loat_form_view" model="ir.ui.view">
+            <field name="name">dieu.chinh.hang.loat.form.view</field>
+            <field name="model">dchang.loat</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <!-- Tạo button xuất hiện theo từng status của bar với states=" "
+                        Định nghĩa name="xacnhan" bên model: dchang_loat.py , ... -->
+                        <button type="object" string="XÁC NHẬN" name="xacnhan" states="moi" class="btn-info"/>
+                        <button type="object" string="HỦY" name="bihuy" states="daduocxacnhan" class="active"/>
+                        <button type="object" string="CHẤP THUẬN" name="chapthuan" states="daduocxacnhan" class="btn-info"/>
+                        <button type="object" string="THIẾT LẬP VỀ DỰ THẢO" name="veduthao" states="bihuy" class="active"/>
+                        <field name="state" widget="statusbar"></field>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                        <!--   Thêm required='True': yêu cầu bắt buộc điền thông tin vào field thamchieu theo form view cụ thể -->
+                                <field name="dchl_thamchieu" required='True'/>
+                                <field name="dchl_thoigian"/>
+                                <field name="dchl_vung"/>
+                            </group>
+                            <group>
+                                <field name="dchl_bhxh" widget="autofill_separate"/>
+                                <field name="dchl_bhtn" widget="autofill_separate"/>
+                        <!-- Thêm fiel currency_id với invisible="1" để show biểu tượng tiền tệ ra sau field -->
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                            <group>
+                                <label for="bhxh" string="B.H Xã Hội" style="font-size: 20px"/>
+                                <field name="dchl_bhxh_md_nld"/>
+                                <field name="dchl_bhxh_md_cty"/>
+                            </group>
+                            <group>
+                                <label for="bhtn" string="B.H Thất Nghiệp" style="font-size: 18px"/>
+                                <field name="dchl_bhtn_md_nld"/>
+                                <field name="dchl_bhtn_md_cty"/>
+                            </group>
+                            <group>
+                                <label for="bhyt" string="B.H Y Tế" style="font-size: 20px"/>
+                                <field name="dchl_bhyt_md_nld"/>
+                                <field name="dchl_bhyt_md_cty"/>
+<!--                            <field name="ngayhethan"/>
+                                <field name="dkkhambenh"/>         -->
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="dieu_chinh_lich_su_hang_loat" string="Sổ Bảo Hiểm">
+                        <!-- Set Readonly cho toàn bộ field trong field one2many tree view (dchl_sobaohiem) khi state không phải là 'moi' -->
+                        <!-- set options="{'no_create': True}" : tắt chức năng create khi click vào "Add a line" link-->
+                                <field name="dchl_sobaohiem" options="{'no_create': True}"
+                                       attrs="{'readonly': [('state', '!=', 'moi')]}" widget="many2many">
+ <!--                                          domain="[('bhxh_bh','=','dchl_vung.bhxh_lcs')]" -->
+                                    <tree string="ABC DEF">
+                                        <field name="state" invisible="1"/>
+                                         <field name="name"/>
+                                         <field name="thamchieu_bh"/>
+                                         <field name="bhxh_bh" widget="monetary"/>
+                                         <field name="bhtn_bh" widget="monetary"/>
+                                         <field name="trangthai_bh"/>
+                                         <!-- Thêm fiel currency_id với invisible="1" để show biểu tượng tiền tệ ra sau field -->
+                                         <field name="currency_id" invisible="1"/>
+                                    </tree>
+                                </field>
+							</page>							
+						</notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+      
+      
+      <record id="dieu_chinh_hang_loat_tree_view" model="ir.ui.view">
+            <field name="name">dieu.chinh.hang.loat.tree.view</field>
+            <field name="model">dchang.loat</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx='false' string="Điều Chỉnh Hàng Loạt Tree View">
+                    <field name="dchl_thamchieu"/>
+                    <!-- Thêm field name="state" invisible="1" để tránh lỗi khi mở Tree View trong Odoo. 
+                        Do model dchang_loat.py : có field 'vung', 'thamchieu'... có thêm vào điều kiện: states -->
+                    <field name="state" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+  
+    <record id="dieu_chinh_hang_loat_calendar_view" model="ir.ui.view">
+            <field name="name">dieu.chinh.hang.loat.calendar.view</field>
+            <field name="model">dchang.loat</field>
+            <field name="arch" type="xml">
+                <calendar string="Calendar Điều Chỉnh Hàng Loạt" date_start="dchl_thoigian" color="dchl_thamchieu"                    
+                mode="month" quick_add="false"> <!-- Tạo calendar với mặc định show theo tháng và bỏ chế độ thêm nhanh 'quick_add' -->                     <field name="dchl_thamchieu"/>
+                </calendar>
+            </field>
+        </record>
+      <!-- Tạo calendar view id xong ==> khai bao view_mode: calendar ở id="action_dieu_chinh_hang_loat" ở dưới -->
+      
+      
+    <record id="action_dieu_chinh_hang_loat" model="ir.actions.act_window">
+            <field name="name">Điều Chỉnh</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dchang.loat</field>
+            <!-- <field name="view_type">form</field> --> <!-- Odoo 13 has removed this field -->
+        
+            <!-- Calendar view xếp trên tree view => Calendar view sẽ show mặc định trước -->
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'calendar', 'view_id': ref('dieu_chinh_hang_loat_calendar_view')}),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('dieu_chinh_hang_loat_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('dieu_chinh_hang_loat_form_view')})]"/>
+        </record>
+
+*******************************************************************************************************************************
+*******************************************************************************************************************************
+
+    <record id="giam_tam_thoi_form_view" model="ir.ui.view">
+            <field name="name">giam.tam.thoi.form.view</field>
+            <field name="model">dieu.chinh</field>
+            <field name="arch" type="xml">
+                <form field="name">
+                    <group class="oe_title">
+                    <!-- Khi chuyển 'tên' từ form dieu_chinh sang custom form bằng context thì cho 'tên' thành readonly -->
+                       <field name="name" readonly="1"/>
+                    </group>
+                    <group class="oe_title">   
+                        <field name="thamchieu"/>
+                    <!-- Thêm field name="state" invisible="1" => tránh báo lỗi : Error: Unknown field state in domain... -->
+                        <field name="state" invisible="1"/>
+                    </group>
+                    <group class="oe_title">
+                        <field name="thoigian"/>
+                    </group>
+                    <footer>
+                        <button name="giam_tam_thoi_popup" string="XÁC NHẬN" type="object" class="btn-danger"/>
+                        <button string="HỦY" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+      
+      <record id="ket_thuc_form_view" model="ir.ui.view">
+            <field name="name">giam.tam.thoi.form.view</field>
+            <field name="model">dieu.chinh</field>
+            <field name="arch" type="xml">
+                <form string="Kết Thúc">
+                    <group class="oe_title">
+                    <!-- Khi chuyển 'tên' từ form dieu_chinh sang custom form bằng context thì cho 'tên' thành readonly -->
+                       <field name="name" readonly="1"/>
+                    </group>
+                    <group class="oe_title">   
+                        <field name="thamchieu"/>
+                    <!-- Thêm field name="state" invisible="1" => tránh báo lỗi : Error: Unknown field state in domain... -->
+                        <field name="state" invisible="1"/>
+                    </group>
+                    <group class="oe_title">
+                        <field name="thoigian"/>
+                    </group>
+                    <footer>
+                        <button name="ket_thuc_popup" string="XÁC NHẬN" type="object" class="btn-primary"/>
+                        <button string="HỦY" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+      
+*********************************************************************************************************************************            
+<record id="lich_su_thay_doi_form_view" model="ir.ui.view">
+            <field name="name">lich.su.thay.doi.form.view</field>
+            <field name="model">lich.su</field>
+            <field name="arch" type="xml">
+                <!-- create và edit = false ==> Set form view ở trạng thái 'read only', không cho chỉnh sửa -->
+                <form create="false" edit="false">
+                    <sheet>
+<!--                        <widget name="web_ribbon" title="Tăng L.Đ" bg_color="btn-primary" 
+                                attrs="{'invisible': [('state', 'in', ('moi','giamtamthoi','ketthuc'))]}"/> -->
+                        <group>
+                            <group>
+                                <label for='thongtin' string="Thông Tin" style="font-size: 26px"/>
+                                <field name="loai"/>
+                                <field name="thamchieu_ls"/>
+                                <field name="thoigian_ls"/>
+                                <field name="bhxh_ls" widget="autofill_separate"/>
+                                <field name="bhtn_ls" widget="autofill_separate"/>
+                        <!-- Thêm fiel currency_id với invisible="1" để show biểu tượng tiền tệ ra sau field -->
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                            <group>
+                                <label for="bhxh" string="B.H Xã Hội" style="font-size: 16px"/>
+                                <field name="bhxh_nld"/>
+                                <field name="bhxh_cty"/>
+                            </group>
+                            <group>
+                                <label for="bhtn" string="B.H Thất Nghiệp" style="font-size: 16px"/>
+                                <field name="bhtn_nld"/>
+                                <field name="bhtn_cty"/>
+                            </group>
+                            <group>
+                                <label for="bhyt" string="B.H Y Tế" style="font-size: 16px"/>
+                                <field name="bhyt_nld"/>
+                                <field name="bhyt_cty"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+     
+********************************************************************************************************************************
+********************  27/2/21: Tạo Group By theo name và set default trong tree view Lịch Sử Thay Đổi:  ************************
+      
+     <record id="lich_su_thay_doi_tree_view_search" model="ir.ui.view">
+        <field name="name">lich.su.thay.doi.tree.view.search</field>
+            <field name="model">lich.su</field>
+            <field name="arch" type="xml">
+                <search string="Search theo name">
+                    <!-- lọc theo group by mặc định -->
+                    <group expand="0" string="Group By">
+                        <filter string="Người Lao Động" name="nld_theonhom" context="{'group_by': 'name'}"/>                     
+                    </group>
+                    <!--  Định nghĩa Search View dựa trên Tên người lao động -->
+                    <field name="name"/>
+                </search>
+         </field>
+      </record>
+      
+********************************************************************************************************************************
+      
+      <record id="lich_su_thay_doi_tree_view" model="ir.ui.view">
+            <field name="name">lich.su.thay.doi.tree.view</field>
+            <field name="model">lich.su</field>
+            <field name="arch" type="xml">
+                                     
+                <!-- Từ odoo 13, đã có hỗ trợ xóa export, create, edit button dễ dàng:
+                     https://www.odoo.com/documentation/13.0/reference/views.html#list -->
+                
+                <tree create="false" export_xlsx='false' decoration-success="loai == 'tanglaodong'" 
+                      decoration-danger="loai == 'giamtamthoi'" decoration-bf="loai == 'ket_thuc'">                    
+<!--                    <field name="name" width="10"/> -->
+                    <field name="thoigian_ls" width="10"/> <!-- width=" " (điều chỉnh độ rộng cột) -->
+                    <field name="bhxh_ls" width="10" widget="monetary"/>
+                    <field name="bhtn_ls" width="10" widget="monetary"/>
+                    <field name="bhxh_nld" width="10" optional="show"/> <!-- optional="show": tạo option hiện/ẩn cho cột -->
+                    <field name="bhxh_cty" width="10" optional="show"/> <!--     Mặc định: các cột option đang hiện -->
+                    <field name="bhyt_nld" width="10" optional="show"/>
+                    <field name="bhyt_cty" width="10" optional="show"/>
+                    <field name="bhtn_nld" width="10" optional="show"/>
+                    <field name="bhtn_cty" width="10" optional="show"/>
+                    <field name="loai" width="10"/>
+                    <field name="thamchieu_ls" width="10"/>
+        <!-- Thêm fiel currency_id với invisible="1" để show biểu tượng tiền tệ ra sau field -->
+                    <field name="currency_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+       
+      
+      <record id="action_lich_su_thay_doi" model="ir.actions.act_window">
+            <field name="name">Lịch Sử Thay Đổi</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">lich.su</field>
+            <!-- set default cho Group By -->
+            <field name="context">{"search_default_nld_theonhom": 1}</field>
+          
+            <!-- <field name="view_type">form</field> --> <!-- Odoo 13 has removed this field -->
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('lich_su_thay_doi_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('lich_su_thay_doi_form_view')})]"/>
+      </record>
+      
+********************************************************************************************************************************
+********************************  19/2/21: Tạo model cau_hinh.py và thêm các view tương ứng:  **********************************
+      
+      <record id="cau_hinh_form_view" model="ir.ui.view">
+            <field name="name">cau.hinh.form.view</field>
+            <field name="model">cau.hinh</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="ten"/>
+                            </group>
+                            <label for="thoigian" string="Khoảng thời gian" style="font-size: 20px"/>
+                                <group>
+                                    <field name="tu_ngay"/>
+                                </group>
+                                <group>
+                                    <field name="den_ngay"/>
+                                </group>
+                            <label for="mucdongbh" string="Lương cơ bản" style="font-size: 20px"/>
+                                <group>
+                                    <field name="md_bhxh" string="Mức đóng BHXH"/>
+                                </group>
+                                <group>
+                                    <field name="md_bhtn" string="Mức đóng BHTN"/>
+                                </group>                      
+                        </group>
+                        <notebook>
+                            <page name="cau_truc_bao_hiem" string="Cấu trúc Bảo Hiểm">
+                                
+							</page>						
+						</notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+      
+      <record id="cau_hinh_tree_view" model="ir.ui.view">
+            <field name="name">cau.hinh.tree.view</field>
+            <field name="model">cau.hinh</field>
+            <field name="arch" type="xml">
+                <tree string="Cấu hình Bảo Hiểm Tree View">
+                    <field name="ten"/>
+                    <field name="tu_ngay"/>
+                    <field name="den_ngay"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_cau_hinh" model="ir.actions.act_window">
+            <field name="name">Cấu hình Bảo Hiểm</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cau.hinh</field>
+            <!-- <field name="view_type">form</field> --> <!-- Odoo 13 has removed this field -->
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('cau_hinh_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('cau_hinh_form_view')})]"/>
+        </record>
+    
+*********************************************************************************************************************************
+******************************  20/2/21: Tạo model cauhinh_vung.py và thêm các view tương ứng:  *********************************
+      
+<record id="cau_hinh_vung_form_view" model="ir.ui.view">
+            <field name="name">cau.hinh.vung.form.view</field>
+            <field name="model">cauhinh.vung</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button type="object" string="XÁC NHẬN" name="xacnhan_vung" states="khoitao" class="active"/>
+                        <field name="state" widget="statusbar"></field>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" 
+                                       options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                            </button>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="vung"/>
+                            </group>
+                            <group>
+                                <field name="ma_vung"/>
+                               <field name="currency_id" invisible="1"/>
+                            </group>
+                            <!-- chèn label "rỗng" để tăng khoảng cách giữa chữ ở trên và dưới -->
+                            <label for="tlcs" string="" style="font-size: 20px"/>
+                            <label for="tlcs" string="" style="font-size: 20px"/>
+                            
+                            <label for="tlcs" string="Mức đóng Bảo Hiểm tối đa" style="font-size: 22px"/>
+                            
+                            <group>
+                                <label for="tlcs_xh" string="B.H Xã Hội" style="font-size: 18px"/>
+                                <group>
+                                    <div class="address_format">
+                                        <field name="bhxh_lcs" style="width: 28%" widget="autofill_separate"
+                                            class="oe_edit_only" attrs="{'readonly':[('state', '=', 'xacnhan')]}"/>
+                                    
+                                        <!--chèn label "rỗng" để tăng khoảng cách giữa 2 field -->
+                                        <label for="tlcs_xh" string=" " style="width: 8%" class="oe_edit_only"/>
+                                    
+                                        <label for="tlcs_xh" string="x" style="font-size: 12px" class="oe_edit_only"/>
+                                        <field name="tlcs_xh" style="width: 18%" class="oe_edit_only"
+                                            attrs="{'readonly':[('state', '=', 'xacnhan')]}"/>
+                                    
+                                        <label for="tlcs" string="=" style="font-size: 12px" class="oe_edit_only"/>
+                                        <field name="bhxhxn" style="width: 27%" readonly="1" widget="autofill_separate"/>
+                                    </div>
+                                </group>
+                            </group>
+                            
+                            <group>
+                                <label for="tlcs_tn" string="B.H Thất Nghiệp" style="font-size: 18px"/>
+                                <group>
+                                    <div class="address_format">
+                                        <field name="bhtn_lcs" style="width: 28%" widget="autofill_separate"
+                                            class="oe_edit_only" attrs="{'readonly':[('state', '=', 'xacnhan')]}"/>
+                                    
+                                        <!--chèn label "rỗng" để tăng khoảng cách giữa 2 field -->
+                                        <label for="tlcs_tn" string=" " style="width: 8%" class="oe_edit_only"/>
+                                    
+                                        <label for="tlcs_tn" string="x" style="font-size: 12px" class="oe_edit_only"/>
+                                        <field name="tlcs_tn" style="width: 18%" class="oe_edit_only"
+                                           attrs="{'readonly':[('state', '=', 'xacnhan')]}"/>
+                                    
+                                        <label for="tlcs" string="=" style="font-size: 12px" class="oe_edit_only"/>
+                                        <field name="bhtnxn" style="width: 27%" readonly="1" widget="autofill_separate"/>
+                                    </div>
+                                </group>
+                            </group>
+                            
+                         </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+      
+      <record id="cau_hinh_vung_tree_view" model="ir.ui.view">
+            <field name="name">cau.hinh.vung.tree.view</field>
+            <field name="model">cauhinh.vung</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx='false' string="Cấu hình Vùng Tree View">
+                    <field name="vung"/>
+                    <field name="state"/>
+            <!-- Thêm fiel currency_id với invisible="1" để show biểu tượng tiền tệ ra sau field -->
+                    <field name="currency_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+      
+      <record id="action_cau_hinh_vung" model="ir.actions.act_window">
+            <field name="name">Cấu hình Vùng</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cauhinh.vung</field>
+            <!-- <field name="view_type">form</field> --> <!-- Odoo 13 has removed this field -->
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('cau_hinh_vung_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('cau_hinh_vung_form_view')})]"/>
+        </record>
+      
+*********************************************************************************************************************************      
+        <!-- Tạo các menu -->
+        <menuitem id="menu_bao_hiem"
+            name="Bảo Hiểm"
+            action="action_bao_hiem"
+            sequence="10"
+            groups="base.group_user"/>
+            <menuitem id="baohiem.menu_1"
+                name="Sổ Bảo Hiểm"
+                action="action_bao_hiem"
+                sequence="11"
+                parent="menu_bao_hiem"/>
+            
+            <menuitem id="baohiem.menu_2"
+                name="Điều Chỉnh"
+                action="action_dieu_chinh"
+                sequence="12"
+                parent="menu_bao_hiem"/>
+                    <menuitem id="baohiem.dieuchinh"
+                        name="Điều chỉnh mức đóng"
+                        action="action_dieu_chinh"
+                        sequence="20"
+                        parent="baohiem.menu_2"/>
+                    <menuitem id="baohiem.dieuchinh_2"
+                        name="Điều chỉnh hàng loạt"
+                        action="action_dieu_chinh_hang_loat"
+                        sequence="21"
+                        parent="baohiem.menu_2"/>
+            
+            <menuitem id="baohiem.menu_3"
+                name="Lịch Sử Thay Đổi"
+                action="action_lich_su_thay_doi"
+                sequence="13"
+                parent="menu_bao_hiem"/>
+      
+            <menuitem id="baohiem.menu_4"
+                name="Cấu Hình Bảo Hiểm"
+                action="action_dieu_chinh"
+                sequence="14"
+                parent="menu_bao_hiem"/>
+                    <menuitem id="baohiem.cauhinh"
+                        name="Cấu hình Bảo Hiểm"
+                        action="action_cau_hinh"
+                        sequence="40"
+                        parent="baohiem.menu_4"/>
+                    <menuitem id="baohiem.cauhinh_2"
+                        name="Cấu hình Vùng"
+                        action="action_cau_hinh_vung"
+                        sequence="41"
+                        parent="baohiem.menu_4"/>
+                 
+  </data>
+</odoo>
