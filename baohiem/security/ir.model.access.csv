@@ -1,0 +1,24 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+manager_bao_hiem,Access to bao_hiem model,model_bao_hiem,group_baohiem_manager,1,1,1,1
+manager_dieu_chinh,Access to dieu_chinh model,model_dieu_chinh,group_baohiem_manager,1,1,1,1
+manager_lich_su,Access to lich_su model,model_lich_su,group_baohiem_manager,1,1,1,1
+manager_dchang_loat,Access to dchang_loat model,model_dchang_loat,group_baohiem_manager,1,1,1,1
+manager_cau_hinh,Access to cau_hinh model,model_cau_hinh,group_baohiem_manager,1,1,1,1
+manager_ketnoi_lichsu,Access to ketnoi_lichsu model,model_ketnoi_lichsu,group_baohiem_manager,1,1,1,1
+manager_cauhinh_vung,Access to cauhinh_vung model,model_cauhinh_vung,group_baohiem_manager,1,1,1,1
+
+officer_bao_hiem,Truy cập bảo hiểm,model_bao_hiem,group_baohiem_officer,1,1,1,1
+officer_dieu_chinh,Truy cập điều chỉnh,model_dieu_chinh,group_baohiem_officer,1,1,1,1
+officer_lich_su,Truy cập Lịch sử thay đổi,model_lich_su,group_baohiem_officer,1,1,1,0
+officer_dchang_loat,Truy cập điều chỉnh HL,model_dchang_loat,group_baohiem_officer,1,1,1,1
+officer_cau_hinh,Truy cập Cấu hình,model_cau_hinh,group_baohiem_officer,0,0,0,0
+officer_ketnoi_lichsu,Truy cập kết nối Lịch sử,model_ketnoi_lichsu,group_baohiem_officer,1,1,1,1
+officer_cauhinh_vung,Truy cập Cấu hình Vùng,model_cauhinh_vung,group_baohiem_officer,1,1,1,1
+
+user_bao_hiem,Truy cập bảo hiểm,model_bao_hiem,group_baohiem_user,1,0,0,0
+user_dieu_chinh,Truy cập điều chỉnh,model_dieu_chinh,group_baohiem_user,0,0,0,0
+user_lich_su,Truy cập Lịch sử thay đổi,model_lich_su,group_baohiem_user,0,0,0,0
+user_dchang_loat,Truy cập điều chỉnh HL,model_dchang_loat,group_baohiem_user,0,0,0,0
+user_cau_hinh,Truy cập Cấu hình,model_cau_hinh,group_baohiem_user,0,0,0,0
+user_ketnoi_lichsu,Truy cập kết nối Lịch sử,model_ketnoi_lichsu,group_baohiem_user,0,0,0,0
+user_cauhinh_vung,Truy cập Cấu hình Vùng,model_cauhinh_vung,group_baohiem_user,0,0,0,0
