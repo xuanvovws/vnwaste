@@ -87,9 +87,9 @@ class BaoHiem(models.Model):
     #Theo quy trình, 1 user chỉ có thể đăng ký 1 Sổ BHXH duy nhất.
     #code này sẽ thông báo khi user chọn trùng tên trong hr.employee.
     #Chú ý: code này chỉ apply được khi bắt đầu sử dụng với model RỖNG
-    _sql_constraints = [
-            ('name', 'unique (name)', 'Người lao động này đã được đăng ký !'),
-        ]
+    #_sql_constraints = [
+    #        ('name', 'unique (name)', 'Người lao động này đã được đăng ký !'),
+    #    ]
     
     #Số Sổ Bảo Hiểm là duy nhất.
     _sql_constraints = [
