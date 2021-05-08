@@ -100,21 +100,29 @@ class DieuChinh(models.Model):
         for field in fields_an_di:
             res[field]['selectable'] = False
         return res
-
 ################################################################################################################################
 #Định nghĩa các button. Trong python, thụt hàng không đúng cũng báo lỗi
 
     def xacnhan(self):
         for rec in self:
-            dcxn = self.env["dieu.chinh"].search([('name','=', rec.name.id)])
-            bhxn = self.env["bao.hiem"].search([('name','=', rec.name.id)])
+            #search trong model bao_hiem.py, field 'name' = với field 'name' của model dieu_chinh.py
+            ten = self.env["bao.hiem"].search([('name','=', rec.name.id)])
+
             #Theo quy trình, 1 user mới phải đăng ký ở Sổ Bảo Hiểm (bao_hiem.py) trước. Sau đó mới sử dụng tới tab Điều Chỉnh (dieu_chinh.py)
             #Để tránh tình trạng user chưa đăng ký, mà đã khai báo bên tab Điều Chỉnh (dieu_chinh.py). Xét điều kiện:
-            if dcxn.name == bhxn.name : #Nếu tên user ở model dieu_chinh.py == tên user ở model bao_hiem.py
-                rec.state = "daduocxacnhan" #thì chuyển state ở dieu_chinh.py
+            
+            if rec.name != ten.name: #Nếu tên user ở model (dieu_chinh.py) == tên user ở model (bao_hiem.py)
+                rec.unlink() #xóa record trước khi hiện thông báo A
                 
-            else:
-                raise Warning ('Người lao động này chưa đăng ký Sổ Bảo Hiểm !') #Note: lúc này record đã được tạo
+                return {
+                    'name': 'Thông Báo',
+                    'view_mode': 'form',
+                    'res_model': 'dc.tba',
+                    'target': 'new',
+                    'type': 'ir.actions.act_window',
+                }
+                
+            rec.state = "daduocxacnhan" #Nếu tên == (bằng) ==> chuyển state
                 
         return True
 ################################################################################################################################
@@ -372,3 +380,28 @@ class DieuChinh(models.Model):
         kt_bh.write({'lstd_baohiem': list_of_lstd_kt})
                      
         return True
+################################################################################################################################    
+    
+class dc_tba(models.TransientModel):
+    _name = 'dc.tba'
+    _description = 'Thông Báo A'
+
+#    message = fields.Text(string="Người Lao động này chưa đăng ký sổ Bảo Hiểm !", readonly=True, store=True)
+
+    def dk_so_bao_hiem(self):
+        return {
+            'view_mode': 'form',
+            'res_model': 'bao.hiem',
+            #'target': 'main'  : để xóa đi những thông tin cũ của record đã xóa
+            'target': 'main',
+            'type': 'ir.actions.act_window',
+            }
+    
+    def huy_dk_sbh(self):
+        return {
+            'view_mode': 'form',
+            'res_model': 'dieu.chinh',
+            'target': 'main',
+            'type': 'ir.actions.act_window',
+        }
+    

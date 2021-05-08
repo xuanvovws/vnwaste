@@ -3,7 +3,7 @@
     'name': "Quảnh lý Bảo Hiểm",
 
     'summary': """
-        Module quản lý Bảo Hiểm""",
+        Quản lý Bảo Hiểm""",
 
     'description': """
         Đây là module quản lý bảo hiểm của người lao động. Gồm: Bảo Hiểm Xã Hội, Bảo Hiểm Y Tế và Bảo Hiểm Thất Nghiệp
