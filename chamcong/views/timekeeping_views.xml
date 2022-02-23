@@ -1,0 +1,609 @@
+<odoo>
+  <data>
+        <!-- Dữ Liệu view -->
+<!--        <record id="du_lieu_form_view" model="ir.ui.view">
+            <field name="name">du.lieu.form.view</field>
+            <field name="model">du.lieu</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name_dl"/>
+                            </group>
+                            <group>
+                                <field name="phong_ban"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="thoigian_dl"/>
+                                <field name="ghichu"/>
+                            </group>
+                            <group>
+                                <field name="time1" widget="float_time"/>
+                                <field name="time2" widget="float_time"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    
+                </form>
+            </field>
+        </record> -->
+      
+        <record id="du_lieu_tree_view" model="ir.ui.view">
+            <field name="name">du.lieu.tree.view</field>
+            <field name="model">du.lieu</field>
+            <field name="arch" type="xml">
+                <tree editable="top">
+                    <field name="name_dl"/>
+                    <field name="thoigian_dl"/>
+                    <field name="ca_lam_viec_dl"/>
+                    <field name="time1"/>
+                    <field name="time2"/>
+                    <field name="min_time1"/>
+                    <field name="max_time1"/>
+                    <field name="min_time2"/>
+                    <field name="max_time2"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_dulieu" model="ir.actions.act_window">
+            <field name="name">Dữ Liệu</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">du.lieu</field>
+            
+            <field name="view_ids" eval="[(5, 0, 0),                         
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('du_lieu_tree_view')})]"/>
+            <!--    (0, 0, {'view_mode': 'form', 'view_id': ref('du_lieu_form_view')})]"/> -->
+        </record>
+      
+      <!-- Chấm Công theo từng Ngày view -->
+        <record id="cham_cong_ngay_form_view" model="ir.ui.view">
+            <field name="name">cham.cong.ngay.form.view</field>
+            <field name="model">chamcong.ngay</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button type="object" string="XÁC NHẬN" name="xacnhan_ngay" states="moi_ccn" class="btn-info"/>
+                        <button type="object" string="VỀ DỰ THẢO" name="veduthao_ngay" states="daduocxacnhan_ccn" class="active"/>
+                        <button type="object" string="HỦY" name="huy_ngay" states="daduyet_ccn" class="active"
+                                confirm = "Bạn muốn hủy Danh sách Chấm công này. Vui lòng xác nhận!"/>
+                        <button type="object" string="CHẤP THUẬN" name="chapthuan_ngay" states="daduocxacnhan_ccn" class="btn-info"/>
+                        <button type="object" string="CHẤM CÔNG" name="chamcong_ngay" states="daduyet_ccn" class="btn-success"/>
+                        <field name="state" widget="statusbar"></field>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="ngay"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="danh_sach_cham_cong_ngay" string="Danh Sách Chấm Công"
+                               attrs="{'invisible':[('state', 'in', ['daduyet_ccn', 'chamcong_ccn'])]}">
+                                <field name="dscc_kn_cc_ngay">
+                                    <tree>
+                                        <field name="name_dscc"/>
+                                        <field name="ca_lam_viec_dscc"/>
+                                        <field name="thoigian_bd_dscc"/>
+                                        <field name="thoigian_kt_dscc"/>
+                                        <field name="trangthai_dscc"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            
+                            <page name="lich_su_cham_cong" string="Lịch Sử Chấm Công"
+                                  attrs="{'invisible':[('state', 'in', ['moi_ccn', 'daduocxacnhan_ccn', 'chamcong_ccn'])]}">         
+                                <field name="lscc_kn_ccn">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="ca_lam_viec_lscc"/>
+                                        <field name="ngay_bd_lscc"/>
+                                        <field name="ngay_kt_lscc"/>
+                                        <field name="time1_lscc"/>
+                                        <field name="time2_lscc"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            
+                            <page name="bao_cao" string="Báo Cáo"
+                                  attrs="{'invisible':[('state', 'in', ['moi_ccn', 'daduocxacnhan_ccn', 'daduyet_ccn'])]}">                                
+                                <field name="baocao_kn_ccn">
+                                    <tree>
+                                        <field name="name_bc"/>
+                                        <field name="ca_lam_viec_bc"/>
+                                        <field name="ngay_bd_bc"/>
+                                        <field name="ngay_kt_bc"/>
+                                        <field name="thamchieu_bc"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>                    
+                </form>
+            </field>
+        </record>
+      
+        <record id="cham_cong_ngay_tree_view" model="ir.ui.view">
+            <field name="name">cham.cong.ngay.tree.view</field>
+            <field name="model">chamcong.ngay</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="ngay"/>
+                    <field name="thamchieu_ccn"/>
+                    <field name="trangthai_ccn"/>
+                    <field name="state" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+      
+        <record id="action_cham_cong_ngay" model="ir.actions.act_window">
+            <field name="name">Chấm Công Theo Ngày</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">chamcong.ngay</field>
+            
+            <field name="view_ids" eval="[(5, 0, 0),                         
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('cham_cong_ngay_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('cham_cong_ngay_form_view')})]"/>
+        </record>
+      
+        <!-- Chấm Công theo từng Ca view -->
+        <record id="cham_cong_form_view" model="ir.ui.view">
+            <field name="name">cham.cong.form.view</field>
+            <field name="model">cham.cong</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button type="object" string="XÁC NHẬN" name="xacnhan" states="moi" class="btn-info"/>
+                        <button type="object" string="VỀ DỰ THẢO" name="veduthao" states="daduocxacnhan" class="active"/>
+                        <button type="object" string="HỦY" name="huy" states="daduyet" class="active"
+                                confirm = "Bạn muốn hủy Danh sách Chấm công này. Vui lòng xác nhận!"/>
+                        <button type="object" string="CHẤP THUẬN" name="chapthuan" states="daduocxacnhan" class="btn-info"/>
+                        <button type="object" string="CHẤM CÔNG" name="chamcong" states="daduyet" class="btn-success"/>
+                        <field name="state" widget="statusbar"></field>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="thoigian"/>
+                            </group>
+                            <group>
+                                <field name="ca_lam_viec"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="danh_sach_cham_cong" string="Danh Sách Chấm Công"
+                                  attrs="{'invisible':[('state', 'in', ['daduyet', 'chamcong'])]}">                         
+                                <field name="dscc_kn_chamcong">
+                                    <tree>
+                                        <field name="name_dscc"/>
+                                        <field name="ca_lam_viec_dscc"/>
+                                        <field name="thoigian_bd_dscc"/>
+                                        <field name="thoigian_kt_dscc"/>
+                                        <field name="trangthai_dscc"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            
+                            <page name="lich_su_cham_cong" string="Lịch Sử Chấm Công"
+                                  attrs="{'invisible':[('state', 'in', ['moi', 'daduocxacnhan', 'chamcong'])]}">                                
+                                <field name="lscc_kn_chamcong">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="ca_lam_viec_lscc"/>
+                                        <field name="ngay_bd_lscc"/>
+                                        <field name="ngay_kt_lscc"/>
+                                        <field name="time1_lscc"/>
+                                        <field name="time2_lscc"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            
+                            <page name="bao_cao" string="Báo Cáo"
+                                  attrs="{'invisible':[('state', 'in', ['moi', 'daduocxacnhan', 'daduyet'])]}">                                
+                                <field name="baocao_kn_chamcong">
+                                    <tree>
+                                        <field name="name_bc"/>
+                                        <field name="ca_lam_viec_bc"/>
+                                        <field name="ngay_bd_bc"/>
+                                        <field name="ngay_kt_bc"/>
+                                        <field name="thamchieu_bc"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>                    
+                </form>
+            </field>
+        </record>
+      
+        <record id="cham_cong_tree_view" model="ir.ui.view">
+            <field name="name">cham.cong.tree.view</field>
+            <field name="model">cham.cong</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="ca_lam_viec"/>
+                    <field name="thoigian"/>
+                    <field name="thamchieu"/>
+                    <field name="trangthai_cc"/>
+                    <field name="state" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+      
+        <record id="action_cham_cong" model="ir.actions.act_window">
+            <field name="name">Chấm Công Theo Ca</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cham.cong</field>
+            
+            <field name="view_ids" eval="[(5, 0, 0),                         
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('cham_cong_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('cham_cong_form_view')})]"/>
+        </record>
+      
+        Thông Báo A Trùng Lặp popup
+        <record id="tb_trung_lap_popup_form" model="ir.ui.view">
+            <field name="name">tb.trung.lap.popup.form</field>
+            <field name="model">tb.lscc</field>
+            <field name="arch" type="xml">
+            <form string="Thông Báo A">
+                <widget name="web_ribbon" title="Trùng Lặp" bg_color="btn-danger"/>
+                <group>
+                    <group>
+                        <field name="ngay_tb"/>
+                    </group>
+                    <group>
+                        <field name="ca_lam_viec_tb"/>
+                    </group>
+                </group>
+                <group>
+                    <label for="tb_lscc" string="Phát hiện có thông tin trong Ngày và Ca làm việc đang chọn đã được ghi nhận !"/>
+                </group>
+                <group>
+                    <label for="tb_lscc" string="Hệ thống sẽ tự động loại bỏ và chỉ chọn các thông tin KHÔNG bị 'Trùng Lặp' để tiếp tục xử lý !"/>
+                </group>
+                <footer>
+                    <button type="object" string="HỦY" special="cancel" class="btn-secondary"/>
+                    <button type="object" string="ĐỒNG Ý" name="dong_y" confirm = "Vui lòng xác nhận lựa chọn của Bạn !" class="btn-danger"/>
+                </footer>
+            </form>
+            </field>
+        </record>
+      
+      Thông Báo B Trùng Lặp popup
+        <record id="tbb_trung_lap_popup_form" model="ir.ui.view">
+            <field name="name">tbb.trung.lap.popup.form</field>
+            <field name="model">tbb.lscc</field>
+            <field name="arch" type="xml">
+            <form string="Thông Báo B">
+                <widget name="web_ribbon" title="Trùng Lặp" bg_color="btn-danger"/>
+                <group>
+                    <field name="ngay_tbb"/>
+                </group>
+                <group>
+                    <label for="tbb_lscc" string="Phát hiện có thông tin trong Ngày làm việc đang chọn đã được ghi nhận !"/>
+                </group>
+                <group>
+                    <label for="tbb_lscc" string="Hệ thống sẽ tự động loại bỏ và chỉ chọn các thông tin KHÔNG bị 'Trùng Lặp' để tiếp tục xử lý !"/>
+                </group>
+                <footer>
+                    <button type="object" string="HỦY" special="cancel" class="btn-secondary"/>
+                    <button type="object" string="ĐỒNG Ý" name="go_to_ok" confirm = "Vui lòng xác nhận lựa chọn của Bạn !" class="btn-danger"/>
+                </footer>
+            </form>
+            </field>
+        </record>
+      
+        <!-- Chấm Công theo từng Nhân Viên view -->
+        <record id="cham_cong_nv_form_view" model="ir.ui.view">
+            <field name="name">cham.cong.nv.form.view</field>
+            <field name="model">chamcong.nv</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button type="object" string="XÁC NHẬN" name="xacnhan_ccnv" states="moi" class="btn-info"/>
+                        <button type="object" string="VỀ DỰ THẢO" name="veduthao_ccnv" states="daduocxacnhan" class="active"/>
+                        <button type="object" string="HỦY" name="huy_ccnv" states="daduyet" class="active"
+                                confirm = "Bạn muốn hủy Danh sách Chấm công này. Vui lòng xác nhận!"/>
+                        <button type="object" string="CHẤP THUẬN" name="chapthuan_ccnv" states="daduocxacnhan" class="btn-info"/>
+                        <button type="object" string="CHẤM CÔNG" name="chamcong_ccnv" states="daduyet" class="btn-success"/>
+                        <field name="state" widget="statusbar"></field>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name_ccnv"/>
+                                <field name="ca_lam_viec_ccnv"/>
+                                <field name="thamchieu_ccnv"/>
+                            </group>
+                            <group>
+                                <field name="thoigian_ccnv"/>
+                                <field name="giovao_ccnv"/>
+                                <field name="giora_ccnv"/>
+                            </group>
+                            <group>
+                                <!-- Tạo ghi chú bằng label trong form view -->
+                                <label for="rong" string=" " style="font-size: 40px"/>
+                                <label for="rong" string=" " style="font-size: 40px"/>
+                                <label for="rong" string=" " style="font-size: 40px"/>
+                                <label for="rong" string=" " style="font-size: 40px"/>
+                                <label for="rong" string=" " style="font-size: 40px"/>
+                                <label for="rong" string=" " style="font-size: 40px"/>
+                                <label for="cahc" string="CAHC : 7h30 - 17h" style="font-size: 11px"/>
+                                <label for="rong" string=" "/>                                
+                                <label for="ca1" string="CA1: 8h - 16h" style="font-size: 11px"/>
+                                <label for="rong" string=" "/>
+                                <label for="ca2" string="CA2: 16h - 23h59" style="font-size: 11px"/>
+                                <label for="rong" string=" "/>
+                                <label for="ca3" string="CA3: 0h - 8h" style="font-size: 11px"/>
+                                <label for="rong" string=" "/>
+                                <label for="can" string="CAN: 5h30 - 15h" style="font-size: 11px"/>
+                                <label for="rong" string=" "/>
+                                <label for="cad1" string="CAD1: 17h - 23h" style="font-size: 11px"/>
+                                <label for="rong" string=" "/>
+                                <label for="cad2" string="CAD2: 23h - 5h sáng hôm sau" style="font-size: 11px"/>
+                                <label for="rong" string=" "/>
+                                <label for="cad3" string="CAD3: 17h - 5h sáng hôm sau" style="font-size: 11px"/>
+                                <label for="rong" string=" "/>
+                                <label for="cad4" string="CAD4: 18h30 - 6h30 sáng hôm sau" style="font-size: 11px"/>                     
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="lich_su_cham_cong" string="Lịch Sử Chấm Công"
+                                  attrs="{'invisible':[('state', 'in', ['moi', 'daduocxacnhan'])]}">                                
+                                <field name="lscc_kn_ccnv">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="ca_lam_viec_lscc"/>
+                                        <field name="ngay_bd_lscc"/>
+                                        <field name="time1_lscc"/>
+                                        <field name="time2_lscc" widget="float_time"/>
+                                    </tree>
+                                </field>
+                            </page>                            
+                        </notebook>
+                    </sheet>                    
+                </form>
+            </field>
+        </record>
+      
+        <record id="cham_cong_nv_tree_view" model="ir.ui.view">
+            <field name="name">cham.cong.nv.tree.view</field>
+            <field name="model">chamcong.nv</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name_ccnv"/>
+                    <field name="ca_lam_viec_ccnv"/>
+                    <field name="thoigian_ccnv"/>
+                    <field name="giovao_ccnv"/>
+                    <field name="giora_ccnv"/>
+                    <field name="thamchieu_ccnv"/>
+                    <field name="trangthai_ccnv"/>
+                    <field name="state" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+      
+      <record id="action_cham_cong_nv" model="ir.actions.act_window">
+            <field name="name">Chấm Công Nhân Viên</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">chamcong.nv</field>
+            
+            <field name="view_ids" eval="[(5, 0, 0),                         
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('cham_cong_nv_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('cham_cong_nv_form_view')})]"/>
+        </record>
+
+-------------------------------------------------------------------------------------------------------
+      <!-- Bảng Chấm Công view -->     
+      <!-- Gantt View -->
+      <record id="bang_cham_cong_gantt_view" model="ir.ui.view">
+            <field name="name">bang.cham.cong.gantt.view</field>
+            <field name="model">bang.chamcong</field>
+            <field name="arch" type="xml">
+                <gantt string="Người Lao Động"
+                       date_start="start_date"
+                       date_stop="end_date"
+                       default_group_by="name">
+                </gantt>
+            </field>
+        </record>
+      
+      <!-- Pivot View -->
+      <record id="bang_cham_cong_pivot_view" model="ir.ui.view">
+            <field name="name">bang.cham.cong.pivot.view</field>
+            <field name="model">bang.chamcong</field>
+            <field name="arch" type="xml">
+                <pivot string="Người Lao Động">
+                    <field name="name"/>
+                    <field name="start_date"/>                      
+                </pivot>
+            </field>
+        </record>
+      
+      <record id="action_bang_cham_cong" model="ir.actions.act_window">
+            <field name="name">Bảng Chấm Công</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bang.chamcong</field>
+            
+          <field name="view_mode">gantt,pivot</field>
+        </record>
+-------------------------------------------------------------------------------------------------------
+      
+      <!-- Lịch sử chấm công view -->
+      <record id="ls_cham_cong_tree_view" model="ir.ui.view">
+            <field name="name">ls.cham.cong.tree.view</field>
+            <field name="model">ls.chamcong</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="chucdanh_lscc"/>
+                    <field name="ca_lam_viec_lscc"/>
+                    <field name="ngay_bd_lscc"/>
+                    <field name="ngay_kt_lscc"/>
+                    <field name="time1_lscc"/>
+                    <field name="time2_lscc"/>
+                    <field name="ngaycong"/>
+                    <field name="tong_ngaycong"/>
+                    <field name="thamchieu_lscc"/>
+                </tree>
+            </field>
+        </record>
+      
+      <record id="action_ls_chamcong" model="ir.actions.act_window">
+            <field name="name">Lịch sử Chấm Công</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ls.chamcong</field>
+            
+            <field name="view_ids" eval="[(5, 0, 0),                         
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('ls_cham_cong_tree_view')})]"/>
+        </record>
+      
+      <!-- Danh sách chấm công view -->
+      <record id="danh_sach_cham_cong_tree_view" model="ir.ui.view">
+            <field name="name">danh.sach.cham.cong.tree.view</field>
+            <field name="model">ds.chamcong</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name_dscc"/>
+                    <field name="ca_lam_viec_dscc"/>
+                    <field name="thoigian_bd_dscc"/>
+                    <field name="thoigian_kt_dscc"/>
+                    <field name="trangthai_dscc"/>
+                    <field name="thamchieu_dscc"/>
+                </tree>
+            </field>
+      </record>
+      
+      <record id="action_danh_sach_cham_cong" model="ir.actions.act_window">
+            <field name="name">Danh Sách Chấm Công</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ds.chamcong</field>
+            
+            <field name="view_ids" eval="[(5, 0, 0),                         
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('danh_sach_cham_cong_tree_view')})]"/>
+      </record>
+      
+      <!-- Ca làm việc view -->
+      <record id="ca_lam_viec_tree_view" model="ir.ui.view">
+            <field name="name">ca.lam.viec.tree.view</field>
+            <field name="model">ca.lamviec</field>
+            <field name="arch" type="xml">
+                <tree editable="top">
+                    <field name="name_clv"/>
+                        <field name="giovao1"/>
+                        <field name="giovao2"/>
+                        <field name="giora1"/>
+                </tree>
+            </field>
+      </record>
+      
+      <record id="action_ca_lam_viec" model="ir.actions.act_window">
+            <field name="name">Ca Làm Việc</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ca.lamviec</field>
+            
+            <field name="view_ids" eval="[(5, 0, 0),                         
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('ca_lam_viec_tree_view')})]"/>
+      </record>
+      
+      <!-- Báo cáo view -->
+      <record id="bao_cao_tree_view" model="ir.ui.view">
+            <field name="name">bao.cao.tree.view</field>
+            <field name="model">bao.cao</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name_bc"/>
+                    <field name="chucdanh_bc"/>
+                    <field name="ca_lam_viec_bc"/>
+                    <field name="ngay_bd_bc"/>
+                    <field name="ngay_kt_bc"/>
+                    <field name="giovao_bc"/>
+                    <field name="giora_bc"/>
+                    <field name="thamchieu_bc"/>
+                    <field name="trangthai_bc"/>
+                </tree>
+            </field>
+        </record>
+      
+      <record id="action_bao_cao" model="ir.actions.act_window">
+            <field name="name">Báo Cáo</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bao.cao</field>
+            
+            <field name="view_ids" eval="[(5, 0, 0),                         
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('bao_cao_tree_view')})]"/>
+        </record>
+      
+*********************************************************************************************************************************      
+        <!-- Tạo các menu -->
+        <menuitem id="menu_tong"
+            name="Chấm Công"
+            action="action_dulieu"
+            sequence="10"
+            groups="base.group_user"/>
+            <!-- timekeeping.menu_... : timekeeping là tên module -->
+            <menuitem id="timekeeping.menu_1"
+                name="Dữ Liệu"
+                action="action_dulieu"
+                sequence="11"
+                parent="menu_tong"/>
+      
+            <menuitem id="timekeeping.menu_2"
+                name="Chấm Công"
+                sequence="12"
+                parent="menu_tong"/>
+                <menuitem id="timekeeping.ngaylamviec"
+                    name="Theo Ngày"
+                    action="action_cham_cong_ngay"
+                    sequence="20"
+                    parent="timekeeping.menu_2"/>
+                <menuitem id="timekeeping.calamviec"
+                    name="Theo Ca"
+                    action="action_cham_cong"
+                    sequence="21"
+                    parent="timekeeping.menu_2"/>
+                <menuitem id="timekeeping.nhanvien"
+                    name="Nhân Viên"
+                    action="action_cham_cong_nv"
+                    sequence="22"
+                    parent="timekeeping.menu_2"/>
+      
+            <menuitem id="timekeeping.menu_3"
+                name="Danh Sách Chấm Công"
+                sequence="13"
+                action="action_danh_sach_cham_cong"
+                parent="menu_tong"/>
+      
+            <menuitem id="timekeeping.menu_4"
+                name="Lịch Sử"
+                action="action_ls_chamcong"
+                sequence="14"
+                parent="menu_tong"/>
+      
+            <menuitem id="timekeeping.menu_5"
+                name="Báo Cáo"
+                action="action_bao_cao"
+                sequence="15"
+                parent="menu_tong"/>
+      
+            <menuitem id="timekeeping.menu_6"
+                name="Bảng Chấm Công"
+                action="action_bang_cham_cong"
+                sequence="16"
+                parent="menu_tong"/>
+      
+            <menuitem id="timekeeping.menu_7"
+                name="Cấu Hình"
+                action="action_ca_lam_viec"
+                sequence="17"
+                parent="menu_tong"/>
+            
+  </data>
+</odoo>

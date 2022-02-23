@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_du_lieu,access_du_lieu,model_du_lieu,base.group_user,1,1,1,1
+access_chamcong_ngay,access_chamcong_ngay,model_chamcong_ngay,base.group_user,1,1,1,1
+access_cham_cong,access_cham_cong,model_cham_cong,base.group_user,1,1,1,1
+access_chamcong_nv,access_chamcong_nv,model_chamcong_nv,base.group_user,1,1,1,1
+accees_ds_chamcong,access_ds_chamcong,model_ds_chamcong,base.group_user,1,1,1,1
+accees_ca_lamviec,access_ca_lamviec,model_ca_lamviec,base.group_user,1,1,1,1
+access_ls_chamcong,access_ls_chamcong,model_ls_chamcong,base.group_user,1,1,1,1
+access_bao_cao,access_bao_cao,model_bao_cao,base.group_user,1,1,1,1
+access_bang_chamcong,access_bang_chamcong,model_bang_chamcong,base.group_user,1,1,1,1
